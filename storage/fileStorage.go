@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"math"
 )
 
 type FileStorage struct {
@@ -40,13 +41,12 @@ func (s *FileStorage) GetEventById(id int) (*data.Event, error) {
 	return nil, errors.New("event not found")
 }
 
-func (s *FileStorage) GetEventListByCoords(minLatitude, maxLatitude, minLongitude, maxLongitude float64) *[]data.Event {
+func (s *FileStorage) GetEventListByCoords(latitude, longitude, radius float64) *[]data.Event {
 	events := make([]data.Event, 0)
 	for _, event := range s.events {
-		if event.Latitude >= minLatitude && event.Latitude <= maxLatitude {
-			if event.Longitude >= minLongitude && event.Longitude <= maxLongitude {
-				events = append(events, event)
-			}
+		distance := math.Sqrt(math.Pow(latitude-event.Latitude, 2) + math.Pow(longitude-event.Longitude, 2))
+		if distance <= radius {
+			events = append(events, event)
 		}
 	}
 	return &events

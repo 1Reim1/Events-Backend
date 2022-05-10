@@ -65,14 +65,8 @@ func (h *EventsHandler) GetMapListByCoords(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	radius = math.Abs(radius)
 
-	minLatitude := latitude - radius
-	maxLatitude := latitude + radius
-	minLongitude := longitude - radius
-	maxLongitude := longitude + radius
-
-	events := (*h.storage).GetEventListByCoords(minLatitude, maxLatitude, minLongitude, maxLongitude)
+	events := (*h.storage).GetEventListByCoords(latitude, longitude, math.Abs(radius))
 	err = json.NewEncoder(w).Encode(events)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

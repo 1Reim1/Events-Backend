@@ -7,5 +7,5 @@ type Storage interface {
 
 	GetEventById(int) (*data.Event, error)
 
-	GetEventListByCoords(float64, float64, float64, float64) *[]data.Event
+	GetEventListByCoords(float64, float64, float64) *[]data.Event
 }
