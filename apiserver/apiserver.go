@@ -2,6 +2,7 @@ package apiserver
 
 import (
 	"Events-Backend/config"
+	"Events-Backend/handlers"
 	"Events-Backend/storage"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -28,5 +29,8 @@ func (s *APIServer) Start() error {
 }
 
 func (s *APIServer) configureRouter() {
+	eventsHandler := handlers.NewEventsHandler(&s.storage)
 
+	s.router.HandleFunc("/list", eventsHandler.GetList)
+	s.router.HandleFunc("/item/{id:[0-9]+}", eventsHandler.GetItem)
 }

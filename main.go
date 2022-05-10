@@ -14,6 +14,9 @@ func main() {
 	}
 
 	storage, err := storage.NewFileStorage(conf.DataFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	apiServer := apiserver.NewAPIServer(conf, storage)
 	if apiServer.Start() != nil {
