@@ -16,7 +16,7 @@ func NewEventsHandler(storage *storage.Storage) *EventsHandler {
 	return &EventsHandler{storage: storage}
 }
 
-func (h *EventsHandler) GetList(w http.ResponseWriter, r *http.Request) {
+func (h *EventsHandler) GetList(w http.ResponseWriter, _ *http.Request) {
 	list := (*h.storage).GetEventList()
 
 	err := json.NewEncoder(w).Encode(list)

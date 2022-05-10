@@ -13,12 +13,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	storage, err := storage.NewFileStorage(conf.DataFile)
+	s, err := storage.NewFileStorage(conf.DataFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	apiServer := apiserver.NewAPIServer(conf, storage)
+	apiServer := apiserver.NewAPIServer(conf, s)
 	if apiServer.Start() != nil {
 		log.Fatal(err)
 	}

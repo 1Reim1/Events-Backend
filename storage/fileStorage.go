@@ -37,5 +37,5 @@ func (s *FileStorage) GetEventById(id int) (*data.Event, error) {
 			return &event, nil
 		}
 	}
-	return nil, errors.New("Event was not found")
+	return nil, errors.New("event not found")
 }
