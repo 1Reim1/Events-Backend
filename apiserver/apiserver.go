@@ -2,19 +2,22 @@ package apiserver
 
 import (
 	"Events-Backend/config"
+	"Events-Backend/storage"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 type APIServer struct {
-	config *config.Config
-	router *mux.Router
+	config  *config.Config
+	router  *mux.Router
+	storage storage.Storage
 }
 
-func NewAPIServer(config *config.Config) *APIServer {
+func NewAPIServer(config *config.Config, storage storage.Storage) *APIServer {
 	return &APIServer{
-		config: config,
-		router: mux.NewRouter(),
+		config:  config,
+		router:  mux.NewRouter(),
+		storage: storage,
 	}
 }
 

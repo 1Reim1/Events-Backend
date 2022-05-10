@@ -1,3 +1,4 @@
 {
-  "BindAddr": ":8080"
+  "BindAddr": ":8080",
+  "DataFile": "data/events.json"
 }

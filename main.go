@@ -3,6 +3,7 @@ package main
 import (
 	"Events-Backend/apiserver"
 	"Events-Backend/config"
+	"Events-Backend/storage"
 	"log"
 )
 
@@ -12,7 +13,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	apiServer := apiserver.NewAPIServer(conf)
+	storage, err := storage.NewFileStorage(conf.DataFile)
+
+	apiServer := apiserver.NewAPIServer(conf, storage)
 	if apiServer.Start() != nil {
 		log.Fatal(err)
 	}

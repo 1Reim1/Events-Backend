@@ -8,6 +8,7 @@ import (
 type Config struct {
 	BindAddr string
 	LogLevel string
+	DataFile string
 }
 
 func NewConfig() (*Config, error) {
