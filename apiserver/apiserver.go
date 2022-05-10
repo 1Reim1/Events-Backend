@@ -31,6 +31,7 @@ func (s *APIServer) Start() error {
 func (s *APIServer) configureRouter() {
 	eventsHandler := handlers.NewEventsHandler(&s.storage)
 
-	s.router.HandleFunc("/list", eventsHandler.GetList)
-	s.router.HandleFunc("/item/{id:[0-9]+}", eventsHandler.GetItem)
+	s.router.HandleFunc("/list", eventsHandler.GetList).Methods(http.MethodGet)
+	s.router.HandleFunc("/item/{id:[0-9]+}", eventsHandler.GetItem).Methods(http.MethodGet)
+	s.router.HandleFunc("/mapList/{latitude}/{longitude}/{radius}", eventsHandler.GetMapListByCoords).Methods(http.MethodGet)
 }
