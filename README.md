@@ -1,9 +1,9 @@
 # Events-Backend
 
-config.json - config for server
+<b>config.json</b> - config for server
 
-/list - all events
+<b>/list</b> - all events
 
-/item/id - event by id
+<b>/item/id</b> - event by id
 
-/mapList/latitude/longitude/radius - events by position and radius
+<b>/mapList/latitude/longitude/radius</b> - events by position and radius
