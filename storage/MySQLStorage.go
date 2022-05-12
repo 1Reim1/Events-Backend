@@ -41,12 +41,14 @@ func (s *MySQLStorage) GetEventList() (*[]data.Event, error) {
 	events := s.scanEvents(eventRows)
 	_ = eventRows.Close()
 	//Get all images
-	imageRows, err := s.db.Query("SELECT `url`, `event_id` FROM `images`")
-	if err != nil {
-		return nil, err
+	if len(events) > 0 {
+		imageRows, err := s.db.Query("SELECT `url`, `event_id` FROM `images`")
+		if err != nil {
+			return nil, err
+		}
+		s.initializeImagesForEvents(events, imageRows)
+		_ = imageRows.Close()
 	}
-	s.initializeImagesForEvents(events, imageRows)
-	_ = imageRows.Close()
 	return &events, nil
 }
 
@@ -90,12 +92,14 @@ func (s *MySQLStorage) GetEventListByCoords(latitude, longitude, radius float64)
 	events := s.scanEvents(eventRows)
 	_ = eventRows.Close()
 	//Get images
-	imageRows, err := s.db.Query(s.buildImagesQuery(events))
-	if err != nil {
-		return nil, err
+	if len(events) > 0 {
+		imageRows, err := s.db.Query(s.buildImagesQuery(events))
+		if err != nil {
+			return nil, err
+		}
+		s.initializeImagesForEvents(events, imageRows)
+		_ = imageRows.Close()
 	}
-	s.initializeImagesForEvents(events, imageRows)
-	_ = imageRows.Close()
 	return &events, nil
 }
 
