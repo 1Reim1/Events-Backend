@@ -1,4 +1,7 @@
 {
   "BindAddr": ":8080",
-  "DataFile": "data/events.json"
+  "DatabaseHost": "127.0.0.1:3306",
+  "DatabaseUser": "root",
+  "DatabasePassword": "",
+  "DatabaseName": "events_backend"
 }

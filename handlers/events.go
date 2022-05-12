@@ -18,9 +18,12 @@ func NewEventsHandler(storage *storage.Storage) *EventsHandler {
 }
 
 func (h *EventsHandler) GetList(w http.ResponseWriter, _ *http.Request) {
-	events := (*h.storage).GetEventList()
+	events, err := (*h.storage).GetEventList()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 
-	err := json.NewEncoder(w).Encode(events)
+	err = json.NewEncoder(w).Encode(events)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -66,7 +69,11 @@ func (h *EventsHandler) GetMapListByCoords(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	events := (*h.storage).GetEventListByCoords(latitude, longitude, math.Abs(radius))
+	events, err := (*h.storage).GetEventListByCoords(latitude, longitude, math.Abs(radius))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
 	err = json.NewEncoder(w).Encode(events)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -13,7 +13,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s, err := storage.NewFileStorage(conf.DataFile)
+	s, err := storage.NewMySQLStorage(conf)
 	if err != nil {
 		log.Fatal(err)
 	}

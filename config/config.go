@@ -6,9 +6,11 @@ import (
 )
 
 type Config struct {
-	BindAddr string
-	LogLevel string
-	DataFile string
+	BindAddr         string
+	DatabaseHost     string
+	DatabaseUser     string
+	DatabasePassword string
+	DatabaseName     string
 }
 
 func NewConfig() (*Config, error) {
