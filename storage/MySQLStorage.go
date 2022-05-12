@@ -39,16 +39,19 @@ func (s *MySQLStorage) GetEventList() (*[]data.Event, error) {
 	}
 	//Scan events into structures
 	events := s.scanEvents(eventRows)
+	_ = eventRows.Close()
 	//Get all images
 	imageRows, err := s.db.Query("SELECT `url`, `event_id` FROM `images`")
 	if err != nil {
 		return nil, err
 	}
 	s.initializeImagesForEvents(events, imageRows)
+	_ = imageRows.Close()
 	return &events, nil
 }
 
 func (s *MySQLStorage) GetEventById(id int) (*data.Event, error) {
+	//Get event
 	e := data.Event{}
 	row := s.db.QueryRow(fmt.Sprintf("SELECT * FROM `events` WHERE `id` = %d", id))
 	err := row.Scan(&e.Id, &e.Title, &e.ShortDescription, &e.Description, &e.EventDate, &e.Latitude, &e.Longitude, &e.Preview)
@@ -68,11 +71,13 @@ func (s *MySQLStorage) GetEventById(id int) (*data.Event, error) {
 			images = append(images, url)
 		}
 	}
+	_ = imageRows.Close()
 	e.Images = images
 	return &e, nil
 }
 
 func (s *MySQLStorage) GetEventListByCoords(latitude, longitude, radius float64) (*[]data.Event, error) {
+	//Get events
 	eventRows, err := s.db.Query(fmt.Sprintf(
 		"SELECT * FROM `events` WHERE SQRT(POW(%f - `latitude`, 2) + POW(%f - `longitude`, 2)) < %f",
 		latitude,
@@ -84,12 +89,14 @@ func (s *MySQLStorage) GetEventListByCoords(latitude, longitude, radius float64)
 	}
 	//Scan events into structures
 	events := s.scanEvents(eventRows)
+	_ = eventRows.Close()
 	//Get images
 	imageRows, err := s.db.Query(s.buildImagesQuery(events))
 	if err != nil {
 		return nil, err
 	}
 	s.initializeImagesForEvents(events, imageRows)
+	_ = imageRows.Close()
 	return &events, nil
 }
 

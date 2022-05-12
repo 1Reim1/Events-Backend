@@ -1,6 +1,8 @@
 # Events-Backend
 
-<b>config.json</b> - config for server
+<b>config/config.json</b> - config for server
+
+<b>events_backend.sql</b> - mysql database example
 
 <b>/list</b> - all events
 
