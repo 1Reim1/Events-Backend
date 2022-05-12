@@ -66,8 +66,7 @@ func (s *MySQLStorage) GetEventById(id int) (*data.Event, error) {
 	images := make([]string, 0)
 	for imageRows.Next() {
 		var url string
-		err = imageRows.Scan(&url)
-		if err == nil {
+		if imageRows.Scan(&url) == nil {
 			images = append(images, url)
 		}
 	}
@@ -126,7 +125,7 @@ func (s *MySQLStorage) initializeImagesForEvents(events []data.Event, imageRows 
 	for imageRows.Next() {
 		var id int
 		var url string
-		if err := imageRows.Scan(&url, &id); err == nil {
+		if imageRows.Scan(&url, &id) == nil {
 			if arr, ok := imagesMap[id]; !ok {
 				imagesMap[id] = []string{url}
 			} else {
