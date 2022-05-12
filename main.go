@@ -19,7 +19,7 @@ func main() {
 	}
 
 	apiServer := apiserver.NewAPIServer(conf, s)
-	if apiServer.Start() != nil {
+	if err = apiServer.Start(); err != nil {
 		log.Fatal(err)
 	}
 }
