@@ -10,15 +10,15 @@ import (
 )
 
 type EventsHandler struct {
-	storage *storage.Storage
+	storage storage.Storage
 }
 
-func NewEventsHandler(storage *storage.Storage) *EventsHandler {
+func NewEventsHandler(storage storage.Storage) *EventsHandler {
 	return &EventsHandler{storage: storage}
 }
 
 func (h *EventsHandler) GetList(w http.ResponseWriter, _ *http.Request) {
-	events, err := (*h.storage).GetEventList()
+	events, err := h.storage.GetEventList()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -38,7 +38,7 @@ func (h *EventsHandler) GetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	event, err := (*h.storage).GetEventById(id)
+	event, err := h.storage.GetEventById(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -70,7 +70,7 @@ func (h *EventsHandler) GetListByCoords(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	events, err := (*h.storage).GetEventListByCoords(latitude, longitude, math.Abs(radius))
+	events, err := h.storage.GetEventListByCoords(latitude, longitude, math.Abs(radius))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

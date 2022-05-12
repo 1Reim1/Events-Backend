@@ -29,7 +29,7 @@ func (s *APIServer) Start() error {
 }
 
 func (s *APIServer) configureRouter() {
-	eventsHandler := handlers.NewEventsHandler(&s.storage)
+	eventsHandler := handlers.NewEventsHandler(s.storage)
 
 	s.router.HandleFunc("/list", eventsHandler.GetList).Methods(http.MethodGet)
 	s.router.HandleFunc("/item/{id:[0-9]+}", eventsHandler.GetItem).Methods(http.MethodGet)
