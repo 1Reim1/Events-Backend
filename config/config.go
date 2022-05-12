@@ -15,7 +15,7 @@ type Config struct {
 
 func NewConfig() (*Config, error) {
 	config := Config{}
-	content, err := ioutil.ReadFile("config\\config.json")
+	content, err := ioutil.ReadFile("config/config.json")
 	if err != nil {
 		return nil, err
 	}
