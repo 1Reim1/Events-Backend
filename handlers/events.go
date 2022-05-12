@@ -21,6 +21,7 @@ func (h *EventsHandler) GetList(w http.ResponseWriter, _ *http.Request) {
 	events, err := (*h.storage).GetEventList()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = json.NewEncoder(w).Encode(events)
@@ -49,7 +50,7 @@ func (h *EventsHandler) GetItem(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *EventsHandler) GetMapListByCoords(w http.ResponseWriter, r *http.Request) {
+func (h *EventsHandler) GetListByCoords(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	latitude, err := strconv.ParseFloat(vars["latitude"], 64)
 	if err != nil {
@@ -72,6 +73,7 @@ func (h *EventsHandler) GetMapListByCoords(w http.ResponseWriter, r *http.Reques
 	events, err := (*h.storage).GetEventListByCoords(latitude, longitude, math.Abs(radius))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = json.NewEncoder(w).Encode(events)

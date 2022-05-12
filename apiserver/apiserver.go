@@ -33,5 +33,5 @@ func (s *APIServer) configureRouter() {
 
 	s.router.HandleFunc("/list", eventsHandler.GetList).Methods(http.MethodGet)
 	s.router.HandleFunc("/item/{id:[0-9]+}", eventsHandler.GetItem).Methods(http.MethodGet)
-	s.router.HandleFunc("/mapList/{latitude}/{longitude}/{radius}", eventsHandler.GetMapListByCoords).Methods(http.MethodGet)
+	s.router.HandleFunc("/mapList/{latitude}/{longitude}/{radius}", eventsHandler.GetListByCoords).Methods(http.MethodGet)
 }
