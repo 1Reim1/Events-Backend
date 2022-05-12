@@ -25,11 +25,9 @@ func NewMySQLStorage(conf *config.Config) (*MySQLStorage, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
-
 	return &MySQLStorage{db: db}, nil
 }
 
@@ -40,39 +38,13 @@ func (s *MySQLStorage) GetEventList() (*[]data.Event, error) {
 		return nil, err
 	}
 	//Scan events into structures
-	events := make([]data.Event, 0)
-	for eventRows.Next() {
-		e := data.Event{}
-		err = eventRows.Scan(&e.Id, &e.Title, &e.ShortDescription, &e.Description, &e.EventDate, &e.Latitude, &e.Longitude, &e.Preview)
-		if err == nil {
-			events = append(events, e)
-		}
-	}
+	events := s.scanEvents(eventRows)
 	//Get all images
 	imageRows, err := s.db.Query("SELECT `url`, `event_id` FROM `images`")
 	if err != nil {
 		return nil, err
 	}
-	//Store images by id
-	imagesMap := make(map[int][]string)
-	for imageRows.Next() {
-		var id int
-		var url string
-		err = imageRows.Scan(&url, &id)
-		if err == nil {
-			if arr, ok := imagesMap[id]; !ok {
-				imagesMap[id] = []string{url}
-			} else {
-				imagesMap[id] = append(arr, url)
-			}
-		}
-	}
-	//Initialize events images
-	for i := 0; i < len(events); i++ {
-		if images, ok := imagesMap[events[i].Id]; ok {
-			events[i].Images = images
-		}
-	}
+	s.initializeImagesForEvents(events, imageRows)
 	return &events, nil
 }
 
@@ -111,32 +83,43 @@ func (s *MySQLStorage) GetEventListByCoords(latitude, longitude, radius float64)
 		return nil, err
 	}
 	//Scan events into structures
+	events := s.scanEvents(eventRows)
+	//Get images
+	imageRows, err := s.db.Query(s.buildImagesQuery(events))
+	if err != nil {
+		return nil, err
+	}
+	s.initializeImagesForEvents(events, imageRows)
+	return &events, nil
+}
+
+func (s *MySQLStorage) scanEvents(eventRows *sql.Rows) []data.Event {
 	events := make([]data.Event, 0)
 	for eventRows.Next() {
 		e := data.Event{}
-		err = eventRows.Scan(&e.Id, &e.Title, &e.ShortDescription, &e.Description, &e.EventDate, &e.Latitude, &e.Longitude, &e.Preview)
+		err := eventRows.Scan(&e.Id, &e.Title, &e.ShortDescription, &e.Description, &e.EventDate, &e.Latitude, &e.Longitude, &e.Preview)
 		if err == nil {
-			e.Images = make([]string, 0)
 			events = append(events, e)
 		}
 	}
-	//Get images
+	return events
+}
+
+func (s *MySQLStorage) buildImagesQuery(events []data.Event) string {
 	imagesQuery := "SELECT `url`, `event_id` FROM `images` WHERE "
 	for _, event := range events {
 		imagesQuery += fmt.Sprintf("`event_id` = %d OR ", event.Id)
 	}
-	imagesQuery = imagesQuery[:len(imagesQuery)-4]
-	imageRows, err := s.db.Query(imagesQuery)
-	if err != nil {
-		return nil, err
-	}
+	return imagesQuery[:len(imagesQuery)-4]
+}
+
+func (s *MySQLStorage) initializeImagesForEvents(events []data.Event, imageRows *sql.Rows) {
 	//Store images by id
 	imagesMap := make(map[int][]string)
 	for imageRows.Next() {
 		var id int
 		var url string
-		err = imageRows.Scan(&url, &id)
-		if err == nil {
+		if err := imageRows.Scan(&url, &id); err == nil {
 			if arr, ok := imagesMap[id]; !ok {
 				imagesMap[id] = []string{url}
 			} else {
@@ -150,6 +133,4 @@ func (s *MySQLStorage) GetEventListByCoords(latitude, longitude, radius float64)
 			events[i].Images = images
 		}
 	}
-
-	return &events, nil
 }
